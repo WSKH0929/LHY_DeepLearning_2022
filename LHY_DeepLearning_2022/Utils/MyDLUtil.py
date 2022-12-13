@@ -5,6 +5,7 @@
 
 import numpy as np
 import torch
+import random
 from torch.utils.data import random_split
 import matplotlib.pyplot as plt
 
@@ -20,6 +21,7 @@ def same_seed(seed):
     torch.backends.cudnn.benchmark = False  # 解决了算法选择的不确定性，方便复现，提升训练速度
     np.random.seed(seed)  # 按顺序产生固定的数组，如果使用相同的seed，则生成的随机数相同， 注意每次生成都要调用一次
     torch.manual_seed(seed)  # 手动设置torch的随机种子，使每次运行的随机数都一致
+    random.seed(seed)
     if torch.cuda.is_available():
         # 为GPU设置唯一的时间种子
         torch.cuda.manual_seed(seed)

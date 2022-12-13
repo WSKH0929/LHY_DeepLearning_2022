@@ -2,51 +2,15 @@
 # Author: WSKH
 # Blog: wskh0929.blog.csdn.net
 # Time: 2022/12/8 21:15
-import csv
+
 import gc
 import pickle
-
 from torch.utils.data import DataLoader
 from HomeWork02.Phoneme_Classification.DataSet import *
 from HomeWork02.Phoneme_Classification.TrainFunction import *
 from Model import *
 from Utils.MyDLUtil import *
 from pathlib import Path
-from sklearn.preprocessing import StandardScaler
-from sklearn.ensemble import ExtraTreesRegressor
-from sklearn.feature_selection import SelectFromModel
-
-
-def read_data(path):
-    """ Read data into numpy arrays """
-    with open(path, 'r') as fp:
-        data = list(csv.reader(fp))
-        data = np.array(data[1:])[:, 1:].astype(float)
-        return data
-
-
-def tree_based_feature_selection(train_data):
-    """ Tree-Based Feature Selector """
-    tree = ExtraTreesRegressor()
-    tree.fit(train_data[:, :-1], train_data[:, -1])
-
-    select_model = SelectFromModel(tree, prefit=True)
-    mask = list(select_model.get_support())
-    feats = []
-    for i in range(len(mask)):
-        if mask[i] is np.True_:
-            feats.append(i)
-
-    print("tree_based_feature_selection:", feats)
-    return feats
-
-
-def z_score_standard_scaler(data):
-    """ Z-Score Standard Scaler """
-    scaler = StandardScaler().fit(data)
-    data = scaler.transform(data)
-    return data
-
 
 if __name__ == '__main__':
     # 防止报错 OMP: Error #15: Initializing libiomp5md.dll, but found libiomp5md.dll already initialized.
@@ -60,8 +24,8 @@ if __name__ == '__main__':
     config = {
         'seed': 929,  # Your seed number, you can pick your lucky number. :)
         'device': 'cuda' if torch.cuda.is_available() else 'cpu',
-        'n_epochs': 30,  # Number of epochs.
-        'batch_size': 1024,
+        'n_epochs': 100,  # Number of epochs.
+        'batch_size': 512,
         'optimizer': 'AdamW',
         'optim_hyper_paras': {  # hyper-parameters for the optimizer (depends on which optimizer you are using)
             'lr': 1e-04,  # learning rate of optimizer

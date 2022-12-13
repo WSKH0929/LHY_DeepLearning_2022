@@ -2,21 +2,14 @@
 # Author: WSKH
 # Blog: wskh0929.blog.csdn.net
 # Time: 2022/12/12 11:34
-import csv
 import json
-import os
 import pickle
-
 from torch.utils.data import DataLoader
-
 from HomeWork02.Phoneme_Classification.DataSet import *
 from HomeWork02.Phoneme_Classification.TestFunction import *
 from Model import *
 from Utils.MyDLUtil import *
 from pathlib import Path
-from sklearn.preprocessing import StandardScaler
-from sklearn.ensemble import ExtraTreesRegressor
-from sklearn.feature_selection import SelectFromModel
 
 
 def save_pred(pred, path):
@@ -26,37 +19,6 @@ def save_pred(pred, path):
         for i, y in enumerate(pred):
             f.write('{},{}\n'.format(i, y))
         print("Saved successfully: " + path)
-
-
-def read_data(path):
-    """ Read data into numpy arrays """
-    with open(path, 'r') as fp:
-        data = list(csv.reader(fp))
-        data = np.array(data[1:])[:, 1:].astype(float)
-        return data
-
-
-def tree_based_feature_selection(train_data):
-    """ Tree-Based Feature Selector """
-    tree = ExtraTreesRegressor()
-    tree.fit(train_data[:, :-1], train_data[:, -1])
-
-    select_model = SelectFromModel(tree, prefit=True)
-    mask = list(select_model.get_support())
-    feats = []
-    for i in range(len(mask)):
-        if mask[i] is np.True_:
-            feats.append(i)
-
-    print("tree_based_feature_selection:", feats)
-    return feats
-
-
-def z_score_standard_scaler(data):
-    """ Z-Score Standard Scaler """
-    scaler = StandardScaler().fit(data)
-    data = scaler.transform(data)
-    return data
 
 
 if __name__ == '__main__':
