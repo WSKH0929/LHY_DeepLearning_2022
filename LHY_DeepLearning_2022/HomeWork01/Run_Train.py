@@ -3,7 +3,6 @@
 # Blog: wskh0929.blog.csdn.net
 # Time: 2022/12/8 21:15
 import csv
-import gc
 import os
 import pickle
 

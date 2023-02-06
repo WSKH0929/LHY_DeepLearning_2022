@@ -67,7 +67,13 @@ def plot_learning_curve(loss_record, title='', save_dir=None):
     Plot learning curve of your Model (train & dev loss)
     """
     x_1 = range(len(loss_record['train']))
-    x_2 = x_1[::len(loss_record['train']) // (len(loss_record['val']) - 1)]
+    if len(loss_record['val']) == 1:
+        x_2 = [0]
+    else:
+        stride = len(loss_record['train']) // (len(loss_record['val']) - 1)
+        if len(loss_record['val']) == 2:
+            stride -= 1
+        x_2 = x_1[::stride]
     plt.plot(x_1, loss_record['train'], c='tab:red', label='train')
     plt.plot(x_2, loss_record['val'], c='tab:cyan', label='val')
     plt.xlabel('Training steps')
@@ -77,6 +83,53 @@ def plot_learning_curve(loss_record, title='', save_dir=None):
     plt.grid(False)
     if save_dir is not None:
         plt.savefig(save_dir + "learning_curve.svg")
+    plt.show()
+
+def plot_acc_curve(acc_record, title='', save_dir=None):
+    """
+    Plot learning curve of your Model (train & dev loss)
+    """
+    x_1 = range(len(acc_record['train']))
+    if len(acc_record['val']) == 1:
+        x_2 = [0]
+    else:
+        stride = len(acc_record['train']) // (len(acc_record['val']) - 1)
+        if len(acc_record['val']) == 2:
+            stride -= 1
+        x_2 = x_1[::stride]
+    plt.plot(x_1, acc_record['train'], c='tab:red', label='train')
+    plt.plot(x_2, acc_record['val'], c='tab:cyan', label='val')
+    plt.xlabel('Training steps')
+    plt.ylabel('Accuracy')
+    plt.title('Accuracy curve of {}'.format(title))
+    plt.legend()
+    plt.grid(False)
+    if save_dir is not None:
+        plt.savefig(save_dir + "accuracy_curve.svg")
+    plt.show()
+
+def plot_GAN_learning_curve(loss_record, save_dir=None):
+    x = range(len(loss_record['G']))
+    # Generator
+    plt.figure()
+    plt.plot(x, loss_record['G'], c='tab:red')
+    plt.xlabel('Generator Updates')
+    plt.ylabel('Loss')
+    plt.title('Learning curve of Generator')
+    plt.grid(False)
+    if save_dir is not None:
+        plt.savefig(save_dir + "generator_learning_curve.svg")
+    plt.show()
+
+    # Discriminator
+    plt.figure()
+    plt.plot(x, loss_record['D'], c='tab:red')
+    plt.xlabel('Discriminator Updates')
+    plt.ylabel('Loss')
+    plt.title('Learning curve of Discriminator')
+    plt.grid(False)
+    if save_dir is not None:
+        plt.savefig(save_dir + "discriminator_learning_curve.svg")
     plt.show()
 
 

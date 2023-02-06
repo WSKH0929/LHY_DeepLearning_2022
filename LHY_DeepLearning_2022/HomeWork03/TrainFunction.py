@@ -8,7 +8,7 @@ from torch import nn
 
 
 def train(train_loader, valid_loader, model, config, device):
-    """ DNN training """
+    """ CNN training """
 
     n_epochs = config['n_epochs']  # Maximum number of epochs
 
@@ -44,14 +44,13 @@ def train(train_loader, valid_loader, model, config, device):
             # Update the parameters with computed gradients.
             optimizer.step()
             # Compute the accuracy for current batch.
-            acc = (logits.argmax(dim=-1) == labels.to(device)).float().mean()
+            acc = (logits.argmax(dim=-1) == labels.to(device)).float().mean().item()
             # Record the loss and accuracy.
+            loss_record['train'].append(loss.item())
             train_loss += loss.item()
-            train_acc += acc.item()
+            train_acc += acc
         train_loss = train_loss / len(train_loader)
         train_acc = train_acc / len(train_loader)
-
-        loss_record['train'].append(train_loss)
 
         # Print the information.
         print(f"[ Train | {epoch + 1:03d}/{n_epochs:03d} ] loss = {train_loss:.5f}, acc = {train_acc:.5f}", end="\t")
@@ -100,11 +99,11 @@ def valid(valid_loader, model, device):
         loss = model.cal_loss(logits, labels.to(device))
 
         # Compute the accuracy for current batch.
-        acc = (logits.argmax(dim=-1) == labels.to(device)).float().mean()
+        acc = (logits.argmax(dim=-1) == labels.to(device)).float().mean().item()
 
         # Record the loss and accuracy.
         valid_loss += loss.item()
-        valid_acc += acc.item()
+        valid_acc += acc
 
     # The average loss and accuracy for entire validation set is the average of the recorded values.
     valid_loss = valid_loss / len(valid_loader)
